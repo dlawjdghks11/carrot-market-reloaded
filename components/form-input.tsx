@@ -4,6 +4,7 @@ interface InputProps {
   placeholder: string;
   errorMessage: string[];
   name: string;
+  defaultValue?: string;
 }
 
 const FormInput = ({
@@ -12,6 +13,7 @@ const FormInput = ({
   placeholder,
   errorMessage,
   name,
+  defaultValue,
 }: InputProps) => {
   return (
     <>
@@ -22,12 +24,15 @@ const FormInput = ({
         className="border-gray-100 w-full h-10 ring-1 focus:ring-2 ring-neutral-200 
         focus:ring-orange-500 transition-colors rounded-md pl-3 mb-2 focus:outline-none"
         placeholder={placeholder}
+        defaultValue={defaultValue}
       />
-      {errorMessage.map((message, index) => {
-        <div key={index} className="!text-red-500 mb-2 hidden">
-          {message}
-        </div>;
-      })}
+      {errorMessage.length > 0
+        ? errorMessage.map((message, index) => (
+            <div key={index} className="!text-red-500 mb-2">
+              {message}
+            </div>
+          ))
+        : null}
     </>
   );
 };
