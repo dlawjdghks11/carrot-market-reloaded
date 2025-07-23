@@ -1,6 +1,7 @@
 "use server";
 import db from "@/lib/script";
 import * as z from "zod";
+import bcrypt from "bcrypt";
 
 const checkUniqueUserName = async (username: string) => {
   const user = await db.user.findUnique({
@@ -46,6 +47,19 @@ export const createAccount = async (prevState: unknown, formData: FormData) => {
   const result = await formSchema.safeParseAsync(data);
   if (!result.success) {
     return { error: result.error, fieldValues: data };
+  } else {
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+    console.log(user);
   }
 
   return {
