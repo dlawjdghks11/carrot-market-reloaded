@@ -2,6 +2,13 @@
 import db from "@/lib/script";
 import * as z from "zod";
 import bcrypt from "bcrypt";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+interface SessionContent {
+  id: number;
+}
 
 const checkUniqueUserName = async (username: string) => {
   const user = await db.user.findUnique({
@@ -59,11 +66,12 @@ export const createAccount = async (prevState: unknown, formData: FormData) => {
         id: true,
       },
     });
-    console.log(user);
+    const cookie = await getIronSession<SessionContent>(await cookies(), {
+      cookieName: "delicious-karrot",
+      password: process.env.COOKIE_PASSWORD!,
+    });
+    cookie.id = user.id;
+    await cookie.save();
+    redirect("/profile");
   }
-
-  return {
-    error: ["Invalid Input"],
-    fieldValues: data,
-  };
 };
