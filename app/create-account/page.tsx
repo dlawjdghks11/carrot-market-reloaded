@@ -4,10 +4,10 @@ import FormInput from "@/components/form-input";
 import FormBtn from "@/components/form-btn";
 import SocialLogin from "@/components/social-login";
 import { useActionState } from "react";
-import { handleForm } from "./actions";
+import { createAccount } from "./actions";
 
 const CreateAccount = () => {
-  const [state, action] = useActionState(handleForm, null);
+  const [state, action] = useActionState(createAccount, null);
   return (
     <div className="relative max-w-lg h-screen ml-auto mr-auto bg-neutral-900 *:text-white px-5 pt-10">
       <h1 className="mb-1">안녕하세요!</h1>
@@ -15,7 +15,7 @@ const CreateAccount = () => {
       <form action={action} className="flex flex-col gap-1 mb-2">
         <FormInput
           type="text"
-          name="text"
+          name="username"
           placeholder="Username"
           required
           errorMessage={["Input error"]}
@@ -39,7 +39,7 @@ const CreateAccount = () => {
         />
         <FormInput
           type="password"
-          name="confirm-password"
+          name="confirm_password"
           placeholder="Confirm Password"
           required
           errorMessage={["Not Match"]}

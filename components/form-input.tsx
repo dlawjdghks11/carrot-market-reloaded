@@ -2,7 +2,7 @@ interface InputProps {
   type: string;
   required: boolean;
   placeholder: string;
-  errorMessage: string[];
+  errorMessage?: string[];
   name: string;
   defaultValue?: string;
 }
@@ -11,7 +11,7 @@ const FormInput = ({
   type,
   required,
   placeholder,
-  errorMessage,
+  errorMessage = [],
   name,
   defaultValue,
 }: InputProps) => {
@@ -26,13 +26,11 @@ const FormInput = ({
         placeholder={placeholder}
         defaultValue={defaultValue}
       />
-      {errorMessage.length > 0
-        ? errorMessage.map((message, index) => (
-            <div key={index} className="!text-red-500 mb-2">
-              {message}
-            </div>
-          ))
-        : null}
+      {errorMessage.map((message, index) => (
+        <div key={index} className="!text-red-500 mb-2">
+          {message}
+        </div>
+      ))}
     </>
   );
 };
