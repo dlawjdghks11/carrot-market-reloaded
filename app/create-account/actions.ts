@@ -2,13 +2,8 @@
 import db from "@/lib/script";
 import * as z from "zod";
 import bcrypt from "bcrypt";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
-interface SessionContent {
-  id: number;
-}
+import getSession from "@/lib/session";
 
 const checkUniqueUserName = async (username: string) => {
   const user = await db.user.findUnique({
@@ -51,7 +46,7 @@ export const createAccount = async (prevState: unknown, formData: FormData) => {
     password: formData.get("password"),
     confirmPassword: formData.get("confirm_password"),
   };
-  const result = await formSchema.safeParseAsync(data);
+  const result = await formSchema.spa(data);
   if (!result.success) {
     return { error: result.error, fieldValues: data };
   } else {
@@ -66,12 +61,9 @@ export const createAccount = async (prevState: unknown, formData: FormData) => {
         id: true,
       },
     });
-    const cookie = await getIronSession<SessionContent>(await cookies(), {
-      cookieName: "delicious-karrot",
-      password: process.env.COOKIE_PASSWORD!,
-    });
-    cookie.id = user.id;
-    await cookie.save();
+    const session = await getSession();
+    session.id = user.id;
+    await session.save();
     redirect("/profile");
   }
 };
